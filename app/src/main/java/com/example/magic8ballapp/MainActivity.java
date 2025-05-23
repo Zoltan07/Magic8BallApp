@@ -1,4 +1,4 @@
-package com.example.magic8ball;
+package com.example.magic8ballapp;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton shakeModeRadioButton, buttonModeRadioButton;
     private CheckBox includeTarotCheckBox;
     private static final int REQUEST_CODE_SPEECH_INPUT = 100;
-    private PredictionDatabase db;
+    private com.example.magic8ballapp.PredictionDatabase db;
 
     private final String[] positiveAnswers = {
             "Biztosan így van", "Határozottan így van", "Kétségtelenül",
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         shakeModeRadioButton = findViewById(R.id.shakeModeRadioButton);
         buttonModeRadioButton = findViewById(R.id.buttonModeRadioButton);
         includeTarotCheckBox = findViewById(R.id.includeTarotCheckBox);
-        db = PredictionDatabase.getDatabase(this);
+        db = com.example.magic8ballapp.PredictionDatabase.getDatabase(this);
 
         findViewById(R.id.generateButton).setOnClickListener(v -> generateAnswer());
 
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.historyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, HistoryActivity.class));
+            startActivity(new Intent(this, com.example.magic8ballapp.HistoryActivity.class));
         });
 
         findViewById(R.id.statisticsButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, StatisticsActivity.class));
+            startActivity(new Intent(this, com.example.magic8ballapp.StatisticsActivity.class));
         });
     }
 

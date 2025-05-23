@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Magic8BallApp</string>
+    <string name="app_name">Magic8Ball</string>
+    <string name="ask">Kérdezz!</string>
+    <string name="shake">Rázás</string>
+    <string name="button">Gomb</string>
+    <string name="history">Előzmények</string>
+    <string name="statistics">Statisztika</string>
+    <string name="mic_description">Beszédfelismerés</string>
+    <string name="include_tarot">Tarot kártya is legyen</string>
 </resources>
