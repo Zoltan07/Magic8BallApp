@@ -7,8 +7,17 @@ import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.view.View;
 import android.widget.*;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
+
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton shakeModeRadioButton, buttonModeRadioButton;
     private CheckBox includeTarotCheckBox;
     private static final int REQUEST_CODE_SPEECH_INPUT = 100;
-    private com.example.magic8ballapp.PredictionDatabase db;
+    private PredictionDatabase db;
 
     private final String[] positiveAnswers = {
             "Biztosan így van", "Határozottan így van", "Kétségtelenül",
@@ -48,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         shakeModeRadioButton = findViewById(R.id.shakeModeRadioButton);
         buttonModeRadioButton = findViewById(R.id.buttonModeRadioButton);
         includeTarotCheckBox = findViewById(R.id.includeTarotCheckBox);
-        db = com.example.magic8ballapp.PredictionDatabase.getDatabase(this);
+        db = PredictionDatabase.getDatabase(this);
 
         findViewById(R.id.generateButton).setOnClickListener(v -> generateAnswer());
 
@@ -61,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.historyButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, com.example.magic8ballapp.HistoryActivity.class));
+            startActivity(new Intent(this, HistoryActivity.class));
         });
 
         findViewById(R.id.statisticsButton).setOnClickListener(v -> {
-            startActivity(new Intent(this, com.example.magic8ballapp.StatisticsActivity.class));
+            startActivity(new Intent(this, StatisticsActivity.class));
         });
     }
 
@@ -93,7 +102,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchTarotCard() {
-        // API hívás helye - lásd előző Tarot API válasz
+        String url = "https://rws-cards-api.herokuapp.com/api/v1/cards/random?n=1";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    try {
+                        JSONObject card = response
+                                .getJSONArray("cards")
+                                .getJSONObject(0);
+
+                        String name = card.getString("name");
+                        String meaning = card.getString("meaning_up");
+
+                        String tarotResult = "\n\n🃏 " + name + "\n🔮 " + meaning;
+                        answerTextView.setText(answerTextView.getText() + tarotResult);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        answerTextView.setText(answerTextView.getText() + "\n⚠️ Tarot értelmezési hiba.");
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    answerTextView.setText(answerTextView.getText() + "\n❌ Nem sikerült Tarot kártyát lekérni.");
+                }
+        );
+
+        queue.add(jsonRequest);
     }
 
     private String getRandom(String[] arr) {
